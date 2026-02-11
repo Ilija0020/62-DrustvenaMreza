@@ -14,6 +14,17 @@ namespace DrustvenaMrezaApi.Controllers
         private GroupMembersRepository membersRepository = new GroupMembersRepository();
         private GroupRepository groupRepository = new GroupRepository();
 
+        [HttpGet]
+        public ActionResult<List<User>> GetUsersByGroup(int groupId)
+        {
+            if (!GroupRepository.Data.ContainsKey(groupId))
+            {
+                return NotFound("Group not found.");
+            }
+            Group group = GroupRepository.Data[groupId];
+            return Ok(group.Members);
+        }
+
         //Put api/groups/{groupId}/groups/{groupId}
         [HttpPut("{userId}")]
         public ActionResult<User> Add(int userId, int groupId)
