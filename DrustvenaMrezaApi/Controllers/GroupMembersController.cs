@@ -25,5 +25,55 @@ namespace DrustvenaMrezaApi.Controllers
             return Ok(group.Members);
 
         }
+
+        //Put api/groups/{groupId}/groups/{groupId}
+        [HttpPut("{userId}")]
+        public ActionResult<User> Add(int userId, int groupId)
+        {
+            if (!GroupRepository.Data.ContainsKey(groupId))
+            {
+                return NotFound("Group not found!");
+            }
+            if(!UserRepository.Data.ContainsKey(userId))
+            {
+                return NotFound("User not found!");
+            }
+            Group group = GroupRepository.Data[groupId];
+            foreach (User member in group.Members)
+            {
+                if (member.Id == userId)
+                {
+                    return Conflict();
+                }
+            }
+            User user = UserRepository.Data[userId];
+            group.Members.Add(user);
+            membersRepository.Save();
+
+            return Ok(group);
+
+        }
+        [HttpDelete("{userId}")]
+        public ActionResult<Group> Remove(int groupId, int userId)
+        {
+            if (!GroupRepository.Data.ContainsKey(groupId))
+            {
+                return NotFound("Group not found");
+            }
+
+            if (!UserRepository.Data.ContainsKey(userId))
+            {
+                return NotFound("User not found");
+            }
+
+            Group group = GroupRepository.Data[groupId];
+            User user = UserRepository.Data[userId];
+            group.Members.Remove(user);
+            // Sačuvamo podatke o članstvima
+            membersRepository.Save();
+
+            return Ok(group);
+        }
+
     }
 }
