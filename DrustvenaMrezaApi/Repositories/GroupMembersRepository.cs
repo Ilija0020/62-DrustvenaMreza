@@ -2,7 +2,7 @@
 using DrustvenaMrezaApi.Repositories;
 using DrustvenaMrezaApi.Models;
 
-namespace social_network_api.Repositories
+namespace DrustvenaMrezaApi.Repositories
 {
     public class GroupMembersRepository
     {

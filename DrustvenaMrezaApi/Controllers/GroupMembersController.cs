@@ -2,7 +2,6 @@
 using DrustvenaMrezaApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using social_network_api.Repositories;
 
 namespace DrustvenaMrezaApi.Controllers
 {
@@ -12,7 +11,7 @@ namespace DrustvenaMrezaApi.Controllers
     {
 
         private UserRepository userRepository = new UserRepository();
-        private GroupMembersRepository membershipRepository = new GroupMembersRepository();
+        private GroupMembersRepository membersRepository = new GroupMembersRepository();
         private GroupRepository groupRepository = new GroupRepository();
 
         //Put api/groups/{groupId}/groups/{groupId}
@@ -37,7 +36,7 @@ namespace DrustvenaMrezaApi.Controllers
             }
             User user = UserRepository.Data[userId];
             group.Members.Add(user);
-            membershipRepository.Save();
+            membersRepository.Save();
 
             return Ok(group);
 
@@ -59,7 +58,7 @@ namespace DrustvenaMrezaApi.Controllers
             User user = UserRepository.Data[userId];
             group.Members.Remove(user);
             // Sačuvamo podatke o članstvima
-            membershipRepository.Save();
+            membersRepository.Save();
 
             return Ok(group);
         }
