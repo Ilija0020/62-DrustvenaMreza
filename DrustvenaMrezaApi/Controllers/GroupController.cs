@@ -6,10 +6,12 @@ using DrustvenaMrezaApi.Repositories;
 
 namespace DrustvenaMrezaApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/groups")]
     [ApiController]
     public class GroupController : ControllerBase
     {
+        private UserRepository userRepository = new UserRepository();
+        private GroupMembersRepository membershipRepository = new GroupMembersRepository();
         private GroupRepository groupRepository = new GroupRepository();
         //GET api/groups
         [HttpGet]

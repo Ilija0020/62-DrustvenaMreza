@@ -48,7 +48,7 @@ namespace DrustvenaMrezaApi.Controllers
             }
             User user = UserRepository.Data[userId];
             group.Members.Add(user);
-            membersRepository.Save();
+            membershipRepository.SaveMemberships();
 
             return Ok(group);
 
@@ -70,7 +70,7 @@ namespace DrustvenaMrezaApi.Controllers
             User user = UserRepository.Data[userId];
             group.Members.Remove(user);
             // Sačuvamo podatke o članstvima
-            membersRepository.Save();
+            membershipRepository.SaveMemberships();
 
             return Ok(group);
         }
