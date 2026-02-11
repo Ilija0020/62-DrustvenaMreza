@@ -36,8 +36,8 @@ namespace DrustvenaMrezaApi.Repositories
                         string[] parts = line.Split(',');
                         if (parts.Length == 2)
                         {
-                            int groupId = int.Parse(parts[0]);
-                            int userId = int.Parse(parts[1]);
+                            int userId = int.Parse(parts[0]);
+                            int groupId = int.Parse(parts[1]);
                             if (!Data.ContainsKey(groupId))
                             {
                                 Data[groupId] = new List<int>();

@@ -29,6 +29,18 @@ namespace DrustvenaMrezaApi.Repositories
                 DateTime createdDate = DateTime.ParseExact(attributes[2], "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 Group group = new Group(id, name, createdDate);
                 Data[id] = group;
+
+                if (GroupMembersRepository.Data.ContainsKey(id))
+                {
+                    List<int> userIds = GroupMembersRepository.Data[id];
+
+                    foreach (int userId in userIds)
+                    {
+
+                        User user = UserRepository.Data[userId];
+                        group.Members.Add(user);
+                    }
+                }
             }
         }
 
