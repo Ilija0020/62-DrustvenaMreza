@@ -1,92 +1,55 @@
-﻿
+﻿using DrustvenaMrezaApi.Models;
+using DrustvenaMrezaApi.Repositories;
 using DrustvenaMrezaApi.Models;
 
-namespace DrustvenaMrezaApi.Repositories
+namespace social_network_api.Repositories
 {
     public class GroupMembersRepository
     {
 
-        private const string membershipsFilePath = "data/memberships.csv";
+        private const string membershipFilePath = "data/memberships.csv"; // Putanja do fajla sa članstvom
         public static Dictionary<int, List<int>> Data;
 
         public GroupMembersRepository()
         {
             if (Data == null)
             {
-                LoadMemberships();
+                Load();
             }
         }
-
-        private void LoadMemberships()
+        private void Load()
         {
+            // Dictionary gde je ključ groupId, a vrednost lista korisnika (ID-evi korisnika)
             Data = new Dictionary<int, List<int>>();
-            if (!File.Exists(membershipsFilePath))
-            {
-                Console.WriteLine("Putanja za ucitavanje clanova grupa ne postoji");
-                return;
-            }
-            try
-            {
-                string[] lines = File.ReadAllLines(membershipsFilePath);
+            string[] lines = File.ReadAllLines(membershipFilePath);
 
-                foreach (string line in lines)
-                {
-                    try
-                    {
-                        string[] parts = line.Split(',');
-                        if (parts.Length == 2)
-                        {
-                            int groupId = int.Parse(parts[0]);
-                            int userId = int.Parse(parts[1]);
-                            if (!Data.ContainsKey(groupId))
-                            {
-                                Data[groupId] = new List<int>();
-                            }
-                            Data[groupId].Add(userId);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine($"Greska pri parsiranju linije: {line}. Preskacem red.");
-                    }
-                }
-            }
-            catch (Exception e)
+            foreach (string line in lines)
             {
-                Console.WriteLine("Došlo je do greške prilikom učitavanja članova grupa.");
-                Console.WriteLine(e.Message);
+                string[] attributes = line.Split(',');
+
+                int userId = int.Parse(attributes[0]);  // ID korisnika
+                int groupId = int.Parse(attributes[1]); // ID grupe
+
+                if (!Data.ContainsKey(groupId))
+                {
+                    Data[groupId] = new List<int>();  // Ako grupa nije u mapi, dodaj je
+                }
+                Data[groupId].Add(userId);  // Dodaj korisnika u grupu
             }
         }
 
-        public void SaveMemberships()
+
+        public void Save()
         {
-            try
+            List<string> lines = new List<string>();
+            foreach (Group group in GroupRepository.Data.Values)
             {
-                string directoryPath = Path.GetDirectoryName(membershipsFilePath);
-                if (!Directory.Exists(directoryPath))
+                foreach (User member in group.Members)
                 {
-                    Directory.CreateDirectory(directoryPath);
+                    lines.Add($"{member.Id},{group.Id}");
                 }
-
-                List<string> lines = new List<string>();
-                if (GroupRepository.Data != null)
-                {
-                    foreach (Group group in GroupRepository.Data.Values)
-                    {
-                        foreach (User member in group.Members)
-                        {
-                            lines.Add($"{member.Id},{group.Id}");
-                        }
-                    }
-                }
-
-                File.WriteAllLines(membershipsFilePath, lines);
             }
-            catch (Exception e)
-            {
-                Console.WriteLine("Došlo je do greške prilikom spremanja članova grupa.");
-                Console.WriteLine(e.Message);
-            }
+            File.WriteAllLines(membershipFilePath, lines);
         }
     }
 }

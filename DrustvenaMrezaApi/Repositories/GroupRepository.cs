@@ -1,4 +1,5 @@
 ﻿using DrustvenaMrezaApi.Models;
+using social_network_api.Repositories;
 using System.Diagnostics.Eventing.Reader;
 using System.Globalization;
 
@@ -29,6 +30,18 @@ namespace DrustvenaMrezaApi.Repositories
                 DateTime createdDate = DateTime.ParseExact(attributes[2], "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 Group group = new Group(id, name, createdDate);
                 Data[id] = group;
+
+                // Učitaj članove ove grupe direktno iz MembershipRepository
+                if (GroupMembersRepository.Data.ContainsKey(id))
+                {
+                    List<int> userIds = GroupMembersRepository.Data[id]; // Lista korisnika koji pripadaju grupi
+
+                    foreach (int userId in userIds)
+                    {
+                        User user = UserRepository.Data[userId];
+                        group.Members.Add(user);  // Dodaj korisnika u grupu
+                    }
+                }
             }
         }
 
