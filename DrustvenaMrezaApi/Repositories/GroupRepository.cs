@@ -40,6 +40,7 @@ namespace DrustvenaMrezaApi.Repositories
                 string formatted = g.CreatedDate.ToString("yyyy-MM-dd");
                 lines.Add($"{g.Id},{g.Name},{formatted}");
             }
+            File.WriteAllLines(filePath, lines);
         }
 
     }
